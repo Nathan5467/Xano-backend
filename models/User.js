@@ -7,14 +7,14 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: [true, "Please provide name"],
       minlength: 3,
-      maxlength: 50,
+      maxlength: 30,
     },
 
     email: {
       type: String,
       required: [true, "Please provide email"],
       minlength: 3,
-      maxlength: 50,
+      maxlength: 30,
       match: [
         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
         "Please provide a valid email",
@@ -24,43 +24,50 @@ const UserSchema = new mongoose.Schema(
     password: {
       type: String,
       required: [true, "Please provide password"],
-      minlength: 3,
+      minlength: 8,
     },
-    phonenumber: {
+    phoneNumber: {
       type: String,
-      required: [true, "Please provide phonenumber"],
-      minlength: 3,
+      required: [true, "Please provide phoneNumber"],
     },
     country: {
       type: String,
-      required: [true, "Please provide password"],
-      minlength: 3,
+      minlength: 2,
+      default: "Israel",
     },
     majority: {
       type: String,
-      required: [true, "Please provide phonenumber"],
       minlength: 3,
+      default:"Software developer",
     },
     bank: {
       type: String,
-      required: [true, "Please provide phonenumber"],
       minlength: 3,
+      default: "0d0a180bE7474b8c8e",
     },
     IFSC_Code: {
       type: String,
-      required: [true, "Please provide phonenumber"],
       minlength: 3,
+      default: "IFCD00642",
     },
     branch: {
       type: String,
-      required: [true, "Please provide phonenumber"],
       minlength: 3,
+      default: "Tel aviv",
     },
     role: {
       required: true,
       type: String,
       default: "user",
     },
+    avatar: {
+      type: String,
+      default: "defaultAvatar.png",
+    },
+    logstatus: {
+      type: Boolean,
+      default: false
+    }
   },
   {
     timestamps: true, // adds createdAt and updatedAt

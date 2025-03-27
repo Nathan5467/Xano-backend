@@ -17,7 +17,7 @@ const getTransacton_history = async (req, res) => {
   //   returun: 32,
   // });
   // await transaction.save();
-  const transaction = await Transaction.find({});
+  const transaction = await Transaction.find({}).sort({updatedAt: -1});
   return res.status(200).json({ transaction });
 };
 const postTransaction_history = async (req, res) => {
@@ -99,6 +99,7 @@ const deleteOrder = async (req, res) => {
 const postOrder = async (req, res) => {
   const options = { new: true };
   const updatedata = req.body;
+  console.log(updatedata);
   const result = await Order.findByIdAndUpdate(
     req.body._id,
     updatedata,

@@ -14,6 +14,10 @@ const Order = new mongoose.Schema(
       type: String,
       required: true,
     },
+    Option: {
+      type: String,
+      required: true,
+    },
     Type: {
       type: String,
       required: true,

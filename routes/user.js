@@ -7,6 +7,8 @@ const {
   dashboard,
   getAllUsers,
   registeragain,
+  deleteUser,
+  logBoolean
 } = require("../controllers/user");
 const {
   getTransacton_history,
@@ -20,6 +22,7 @@ const {
   deleteOrder,
   getAdminFund,
   putFund_history,
+
 } = require("../controllers/transaction");
 const authMiddleware = require("../middleware/auth");
 
@@ -27,7 +30,9 @@ router.route("/login").post(login);
 router.route("/register").post(register);
 router.route("/registeragain").post(authMiddleware, registeragain);
 router.route("/dashboard").get(authMiddleware, dashboard);
-router.route("/getAlluers").get(authMiddleware, getAllUsers);
+router.route("/getAllusers").get(authMiddleware, getAllUsers);
+  //userlists admin user delete
+  router.route("/getAllusers/:id").delete(authMiddleware, deleteUser);
 
 //portfolio section
 router
@@ -36,6 +41,8 @@ router
 router
   .route("/getTransacton_history")
   .post(authMiddleware, postTransaction_history);
+
+
 
 //fund section
 router.route("/getFund_history").get(authMiddleware, getFund_history);
@@ -54,4 +61,6 @@ router.route("/getOrder/:id").delete(authMiddleware, deleteOrder);
 router.route("/getTotal_fund").get(authMiddleware, getTotal_fund);
 router.route("/getTotal_fund").post(authMiddleware, postTotal_fund);
 
+//logOut
+router.route("/logout").post(logBoolean);
 module.exports = router;

@@ -1,8 +1,21 @@
-const jwt = require("jsonwebtoken");
-const User = require("../models/User");
-const JWT_SECRET = "secretkey";
-const bcrypt = require("bcryptjs");
+// File: controllers/user.js
+// Description: This file contains the controller logic for handling user-related operations in the application.
+// It interacts with the User model, performs database operations, and handles authentication using JWT.
 
+// Dependencies
+const jwt = require("jsonwebtoken"); // For generating and verifying JSON Web Tokens (JWT).
+const bcrypt = require("bcryptjs"); // For hashing and comparing passwords securely.
+const User = require("../models/User"); // Mongoose model for the User collection.
+
+// Constants
+const JWT_SECRET = "secretkey"; // Secret key for signing JWT tokens (should be stored securely in environment variables).
+
+// Controller Functions
+
+/**
+ * Handles user login.
+ * Verifies email and password, updates log status, and generates a JWT token.
+ */
 const login = async (req, res) => {
   const { email, password } = req.body;
 
@@ -12,103 +25,122 @@ const login = async (req, res) => {
     });
   }
 
-  let foundUser = await User.findOne({ email: req.body.email });
+  const foundUser = await User.findOne({ email });
   if (foundUser) {
     const isMatch = await foundUser.comparePassword(password);
-
     if (isMatch) {
+      await User.findByIdAndUpdate(foundUser._id, { logstatus: true });
       const token = jwt.sign(
         {
           id: foundUser._id,
           name: foundUser.name,
           email: foundUser.email,
+          avatar: foundUser.avatar,
           role: foundUser.role,
           country: foundUser.country,
           majority: foundUser.majority,
-          phonenumber: foundUser.phonenumber,
+          phoneNumber: foundUser.phoneNumber,
           IFSC_Code: foundUser.IFSC_Code,
           bank: foundUser.bank,
           branch: foundUser.branch,
         },
         JWT_SECRET,
-        {
-          expiresIn: "30d",
-        }
+        { expiresIn: "1d" }
       );
-
-      return res.status(200).json({ msg: "user logged in", token });
+      return res.status(200).json({ msg: "User logged in", token });
     } else {
-      return res.status(200).json({ msg: "password" });
+      return res.status(200).json({ msg: "Invalid password" });
     }
   } else {
-    return res.status(200).json({ msg: "email" });
+    return res.status(200).json({ msg: "Email not found" });
   }
 };
 
+/**
+ * Updates the user's log status to false (e.g., for logout).
+ */
+const logBoolean = async (req, res) => {
+  const userId = req.body.id;
+  const result = await User.findByIdAndUpdate(userId, { logstatus: false });
+  res.status(200).json({ msg: "Log status updated", result });
+};
+
+/**
+ * Returns a personalized message and a random lucky number for authenticated users.
+ */
 const dashboard = async (req, res) => {
   const luckyNumber = Math.floor(Math.random() * 100);
-
   res.status(200).json({
     msg: `Hello, ${req.user.name}`,
     secret: `Here is your authorized data, your lucky number is ${luckyNumber}`,
   });
 };
 
+/**
+ * Retrieves all users from the database.
+ */
 const getAllUsers = async (req, res) => {
-  let users = await User.find({});
-  console.log(users)
-
-  return res.status(200).json({ users });
+  const users = await User.find({});
+  res.status(200).json({ users });
 };
 
+/**
+ * Deletes a user from the database based on the provided user ID.
+ */
+const deleteUser = async (req, res) => {
+  const userId = req.params.id;
+  await User.findByIdAndDelete(userId);
+  res.status(200).json({ msg: "User deleted successfully" });
+};
+
+/**
+ * Handles user registration.
+ * Creates a new user if the email is not already in use.
+ */
 const register = async (req, res) => {
-  let foundUser = await User.findOne({ email: req.body.email });
-  if (foundUser === null) {
-    let { username, email, password, phonenumber } = req.body;
-    if (username.length && email.length && password.length) {
-      const person = new User({
+  const { username, email, password, phoneNumber } = req.body;
+
+  const foundUser = await User.findOne({ email });
+  if (!foundUser) {
+    if (username && email && password) {
+      const newUser = new User({
         name: username,
-        email: email,
-        password: password,
-        phonenumber: phonenumber,
+        email,
+        password,
+        phoneNumber,
         role: "user",
       });
-      await person.save();
-      return res.status(201).json({ person });
+      await newUser.save();
+      return res.status(201).json({ newUser });
     } else {
-      return res
-        .status(400)
-        .json({ msg: "Please add all values in the request body" });
+      return res.status(400).json({ msg: "Please provide all required fields" });
     }
   } else {
     return res.status(400).json({ msg: "Email already in use" });
   }
 };
 
+/**
+ * Updates user details, including the password, based on the provided data.
+ */
 const registeragain = async (req, res) => {
   const options = { new: true };
-  const updatedata = req.body;
-  const salt = await bcrypt.genSalt(10);
-  console.log(req.user.id);
-  const password = await bcrypt.hash(req.body.password, salt);
-  const update_again = { ...req.body, password: password };
-  console.log(update_again);
-  const result = await User.findByIdAndUpdate(
-    req.user.id,
-    update_again,
-    options
-  );
+  const updateData = { ...req.body };
+  const result = await User.findByIdAndUpdate(req.user.id, updateData, options);
+
   if (!result) {
-    return res.status(404).send({ message: "User not found" });
-    console.log("err");
+    return res.status(404).json({ msg: "User not found" });
   }
-  return res.status(200).json({ msg: "success" });
+  res.status(200).json({ msg: "User updated successfully", result });
 };
 
+// Exports
 module.exports = {
   login,
   register,
   dashboard,
   getAllUsers,
   registeragain,
+  deleteUser,
+  logBoolean,
 };
