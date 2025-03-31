@@ -2,14 +2,6 @@ const mongoose = require("mongoose");
 
 const Fund_history = new mongoose.Schema(
   {
-    // date: {
-    //   type: Date,
-    //   required: true,
-    // },
-    // time: {
-    //   type: String,
-    //   required: true,
-    // },
     transaction_id: {
       type: String,
       required: true,
