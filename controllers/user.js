@@ -18,7 +18,6 @@ const JWT_SECRET = "secretkey"; // Secret key for signing JWT tokens (should be 
  */
 const login = async (req, res) => {
   const { email, password } = req.body;
-
   if (!email || !password) {
     return res.status(400).json({
       msg: "Bad request. Please add email and password in the request body",
@@ -131,6 +130,25 @@ const registeragain = async (req, res) => {
   if (!result) {
     return res.status(404).json({ msg: "User not found" });
   }
+  await User.findByIdAndUpdate(foundUser._id, { logstatus: true });
+      const token = jwt.sign(
+        {
+          id: foundUser._id,
+          name: foundUser.name,
+          email: foundUser.email,
+          avatar: foundUser.avatar,
+          role: foundUser.role,
+          country: foundUser.country,
+          majority: foundUser.majority,
+          phoneNumber: foundUser.phoneNumber,
+          IFSC_Code: foundUser.IFSC_Code,
+          bank: foundUser.bank,
+          branch: foundUser.branch,
+        },
+        JWT_SECRET,
+        { expiresIn: "1d" }
+      );
+      return res.status(200).json({ msg: "User logged in", token });
   res.status(200).json({ msg: "User updated successfully", result });
 };
 
