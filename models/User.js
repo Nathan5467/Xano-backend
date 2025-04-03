@@ -38,22 +38,21 @@ const UserSchema = new mongoose.Schema(
     majority: {
       type: String,
       minlength: 3,
-      default:"Software developer",
+      default:"Student",
     },
     bank: {
       type: String,
       minlength: 3,
-      default: "0d0a180bE7474b8c8e",
+      default: "Unlinked",
     },
     IFSC_Code: {
       type: String,
       minlength: 3,
-      default: "IFCD00642",
+      default: "No IFSC_Code",
     },
     branch: {
       type: String,
-      minlength: 3,
-      default: "Tel aviv",
+     default: " ",
     },
     role: {
       required: true,
@@ -63,6 +62,10 @@ const UserSchema = new mongoose.Schema(
     avatar: {
       type: String,
       default: "defaultAvatar.png",
+    },
+    balance: {
+      type: Number,
+      default: 0.00
     },
     logstatus: {
       type: Boolean,

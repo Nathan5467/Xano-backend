@@ -1,26 +1,33 @@
 const Transaction = require("../models/Transaction");
-const Fund_history = require("../models/Fund_history");
+//const Fund_history = require("../models/Fund_history");
 const Order = require("../models/Order");
 const Total_fund = require("../models/Total_fund");
 const Fund = require("../models/Fund");
 
 ///this is portfolio section
 const getTransacton_history = async (req, res) => {
-  // const transaction = new Transaction({
-  //   stocks: "Apple INC",
-  //   qty: 10,
-  //   avg: 144.5,
-  //   cmp: 147.7,
-  //   value_cost: 1445.0,
-  //   value_cmp: 1477.0,
-  //   day_gain: 0.8,
-  //   returun: 32,
-  // });
-  // await transaction.save();
   const transaction = await Transaction.find({}).sort({updatedAt: -1});
   return res.status(200).json({ transaction });
 };
+const deleteTransaction_history = async (req, res) => {
+  const transactionId = req.params.id;
+  const result = await Transaction.findByIdAndDelete(transactionId);
+  if (!result) {
+    return res.status(404).send({ message: "This transaction not found" });
+    console.log("err");
+  }
+  const transaction = await Transaction.find({});
+  return res.status(200).json({ transaction });
+};
+
 const postTransaction_history = async (req, res) => {
+  const new_Transaction = new Transaction(req.body);
+  await new_Transaction.save();
+  const transaction = await Transaction.find({});
+  return res.status(200).json({ transaction });
+};
+
+const putTransaction_history = async (req, res) => {
   const options = { new: true };
   const updatedata = req.body;
   const result = await Transaction.findByIdAndUpdate(
@@ -29,13 +36,11 @@ const postTransaction_history = async (req, res) => {
     options
   );
   if (!result) {
-    return res.status(404).send({ message: "User not found" });
+    return res.status(404).send({ message: "Transaction not found" });
     console.log("err");
   }
-  const transaction = await Transaction.find({});
-  return res.status(200).json({ transaction });
+  return res.status(200).json({ msg: "success" });
 };
-
 //this is fund section
 const getFund_history = async (req, res) => {
   const fund = await Fund.find({});
@@ -61,6 +66,16 @@ const postFund_history = async (req, res) => {
   const fund = await Fund.find({});
   return res.status(200).json({ fund });
 };
+const deleteFund_history = async (req, res) => {
+  const fundId = req.params.id;
+  const result = await Fund.findByIdAndDelete(fundId);
+  if (!result) {
+    return res.status(404).send({ message: "Fund not found" });
+    console.log("err");
+  }
+  const fund = await Fund.find({});
+  return res.status(200).json({ fund });
+};
 
 const getAdminFund = async (req, res) => {
   const found_found = await Fund.find({});
@@ -68,19 +83,8 @@ const getAdminFund = async (req, res) => {
   return res.status(200).json({ fund });
 };
 
-//order section
+//order
 const getOrder = async (req, res) => {
-  // const newOrder = new Order({
-  //   name: "AppleInc 28 Jan 50 Call",
-  //   status: "successful",
-  //   Time: "09:35",
-  //   Type: "B",
-  //   Qty: 75,
-  //   value: 75,
-  //   CMP: 22.1,
-  //   price: 30.0,
-  // });
-  // await newOrder.save();
   const order = await Order.find({});
   return res.status(200).json({ order });
 };
@@ -95,22 +99,25 @@ const deleteOrder = async (req, res) => {
   const order = await Order.find({});
   return res.status(200).json({ order });
 };
-
 const postOrder = async (req, res) => {
+  const new_Order = new Order(req.body);
+  await new_Order.save();
+  const order = await Order.find({});
+  return res.status(200).json({ order });
+};
+const putOrder = async (req, res) => {
   const options = { new: true };
   const updatedata = req.body;
-  console.log(updatedata);
   const result = await Order.findByIdAndUpdate(
     req.body._id,
     updatedata,
     options
   );
   if (!result) {
-    return res.status(404).send({ message: "User not found" });
+    return res.status(404).send({ message: "Order not found" });
     console.log("err");
   }
-  const order = await Order.find({});
-  return res.status(200).json({ order });
+  return res.status(200).json({ msg: "success" });
 };
 
 // fund section
@@ -132,13 +139,17 @@ const postTotal_fund = async (req, res) => {
 
 module.exports = {
   getTransacton_history,
+  deleteTransaction_history,
+  postTransaction_history,
+  putTransaction_history,
   getFund_history,
   postFund_history,
-  getOrder,
+  deleteFund_history,
   getTotal_fund,
   postTotal_fund,
-  postTransaction_history,
+  getOrder,
   postOrder,
+  putOrder,
   deleteOrder,
   getAdminFund,
   putFund_history,

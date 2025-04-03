@@ -42,6 +42,7 @@ const login = async (req, res) => {
           IFSC_Code: foundUser.IFSC_Code,
           bank: foundUser.bank,
           branch: foundUser.branch,
+          balance: foundUser.balance,
         },
         JWT_SECRET,
         { expiresIn: "1d" }
@@ -92,13 +93,24 @@ const deleteUser = async (req, res) => {
   res.status(200).json({ msg: "User deleted successfully" });
 };
 
+const updateUser = async (req, res) => {
+  const options = { new: true };
+  const updateData = { ...req.body };
+  const result = await User.findByIdAndUpdate(req.user.id, updateData, options);
+
+  if (!result) {
+    return res.status(404).json({ msg: "User not found" });
+  }
+  res.status(200).json({ msg: "User updated successfully", result });
+};
+
 /**
  * Handles user registration.
  * Creates a new user if the email is not already in use.
  */
 const register = async (req, res) => {
   const { username, email, password, phoneNumber } = req.body;
-
+  
   const foundUser = await User.findOne({ email });
   if (!foundUser) {
     if (username && email && password) {
@@ -123,39 +135,39 @@ const register = async (req, res) => {
  * Updates user details, including the password, based on the provided data.
  */
 const registeragain = async (req, res) => {
-  const options = { new: true };
-  const updateData = { ...req.body };
-  const result = await User.findByIdAndUpdate(req.user.id, updateData, options);
-
-  if (!result) {
+  const foundUser = { ...req.body };
+  const result = await User.findByIdAndUpdate(req.body.id, foundUser);
+  if (!result) {  
     return res.status(404).json({ msg: "User not found" });
   }
-  await User.findByIdAndUpdate(foundUser._id, { logstatus: true });
-      const token = jwt.sign(
-        {
-          id: foundUser._id,
-          name: foundUser.name,
-          email: foundUser.email,
-          avatar: foundUser.avatar,
-          role: foundUser.role,
-          country: foundUser.country,
-          majority: foundUser.majority,
-          phoneNumber: foundUser.phoneNumber,
-          IFSC_Code: foundUser.IFSC_Code,
-          bank: foundUser.bank,
-          branch: foundUser.branch,
-        },
-        JWT_SECRET,
-        { expiresIn: "1d" }
-      );
-      return res.status(200).json({ msg: "User logged in", token });
-  res.status(200).json({ msg: "User updated successfully", result });
+  await User.findByIdAndUpdate(foundUser._id, { logstatus: true }, { new: true });
+  const token = jwt.sign(
+    {
+      id: foundUser._id,
+      name: foundUser.name,
+      email: foundUser.email,
+      avatar: foundUser.avatar,
+      role: foundUser.role,
+      country: foundUser.country,
+      majority: foundUser.majority,
+      phoneNumber: foundUser.phoneNumber,
+      IFSC_Code: foundUser.IFSC_Code,
+      bank: foundUser.bank,
+      branch: foundUser.branch,
+      balance: foundUser.balance,
+      logstatus: foundUser.logstatus,
+    },
+    JWT_SECRET,
+    { expiresIn: "1d" }
+  );
+  return res.status(200).json({ msg: "User logged in", token });
 };
 
 // Exports
 module.exports = {
   login,
   register,
+  updateUser,
   dashboard,
   getAllUsers,
   registeragain,
