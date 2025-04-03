@@ -65,6 +65,7 @@ The user model includes the following fields:
 - IFSC_Code
 - bank
 - branch
+- balance
 
 ## Security Features
 
