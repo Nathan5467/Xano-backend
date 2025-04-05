@@ -47,7 +47,7 @@ router.route("/getTransacton_history").post(authMiddleware, postTransaction_hist
 router.route("/getTransacton_history").put(authMiddleware, putTransaction_history);
 router.route("/getTransacton_history/:id").delete(authMiddleware, deleteTransaction_history);
 router.route("/getPendingPortfolio").get(authMiddleware, getPendingPortfolio);
-router.route("/getPendingPortfolio").put(authMiddleware, putTransaction_history);
+router.route("/getPendingPortfolio").put(authMiddleware, putPendingPortfolio);
 
 
 
