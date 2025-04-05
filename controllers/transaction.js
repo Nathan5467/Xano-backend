@@ -20,6 +20,27 @@ const deleteTransaction_history = async (req, res) => {
   return res.status(200).json({ transaction });
 };
 
+const getPendingPortfolio = async (req, res) => {
+  const penPort = await Transaction.find({});
+  const portf = penPort.filter((item) => item.Type === "pending");
+  return res.status(200).json({ portf });
+};
+
+const putPendingPortfolio = async (req, res) => {
+  const options = { new: true };
+  const updatedata = req.body;
+  const result = await Transaction.findByIdAndUpdate(
+    req.body._id,
+    updatedata,
+    options
+  );
+  if (!result) {
+    return res.status(404).send({ message: "Fund not found" });
+    console.log("err");
+  }
+  return res.status(200).json({ msg: "success" });
+};
+
 const postTransaction_history = async (req, res) => {
   const new_Transaction = new Transaction(req.body);
   await new_Transaction.save();
@@ -153,4 +174,6 @@ module.exports = {
   deleteOrder,
   getAdminFund,
   putFund_history,
+  getPendingPortfolio,
+  putPendingPortfolio,
 };

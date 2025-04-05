@@ -27,6 +27,8 @@ const {
   getTotal_fund,
   postTotal_fund,
   getAdminFund,
+  getPendingPortfolio,
+  putPendingPortfolio,
 } = require("../controllers/transaction");
 const authMiddleware = require("../middleware/auth");
 
@@ -44,6 +46,8 @@ router.route("/getTransacton_history").get(authMiddleware, getTransacton_history
 router.route("/getTransacton_history").post(authMiddleware, postTransaction_history);
 router.route("/getTransacton_history").put(authMiddleware, putTransaction_history);
 router.route("/getTransacton_history/:id").delete(authMiddleware, deleteTransaction_history);
+router.route("/getPendingPortfolio").get(authMiddleware, getPendingPortfolio);
+router.route("/getPendingPortfolio").put(authMiddleware, putTransaction_history);
 
 
 

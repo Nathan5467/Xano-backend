@@ -18,11 +18,15 @@ const Transaction = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    value_cost: {
+    val_cost: {
       type: Number,
       required: true,
     },
-    value_cmp: {
+    return: {
+      type: Number,
+      required: true,
+    },
+    val_cmp: {
       type: Number,
       required: true,
     },
@@ -30,8 +34,13 @@ const Transaction = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    returun: {
-      type: Number,
+    owner: {
+      type: String,
+      required: true,
+    },
+    Type: {
+      type: String,
+      default: "success",
       required: true,
     },
   },
