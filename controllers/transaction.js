@@ -99,6 +99,7 @@ const editFund_history = async (req, res) => {
 };
 const postFund_history = async (req, res) => {
   const new_fund = new Fund(req.body);
+  console.log(new_fund);
   await new_fund.save();
   const fund = await Fund.find({});
   return res.status(200).json({ fund });
@@ -137,7 +138,9 @@ const deleteOrder = async (req, res) => {
   return res.status(200).json({ order });
 };
 const postOrder = async (req, res) => {
+  
   const new_Order = new Order(req.body);
+  console.log(new_Order);
   await new_Order.save();
   const order = await Order.find({});
   return res.status(200).json({ order });

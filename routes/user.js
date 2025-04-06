@@ -9,6 +9,7 @@ const {
   updateUser,
   registeragain,
   deleteUser,
+  resetPassword,
   logBoolean
 } = require("../controllers/user");
 const {
@@ -39,6 +40,7 @@ router.route("/registeragain").post(authMiddleware, registeragain);
 router.route("/updateUser/:id").put(authMiddleware, updateUser);
 router.route("/dashboard").get(authMiddleware, dashboard);
 router.route("/getAllusers").get(authMiddleware, getAllUsers);
+router.route("/resetPassword/:id").put(authMiddleware, resetPassword);
   //userlists admin user delete
   router.route("/getAllusers/:id").delete(authMiddleware, deleteUser);
 

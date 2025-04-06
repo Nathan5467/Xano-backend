@@ -43,7 +43,7 @@ const UserSchema = new mongoose.Schema(
     bank: {
       type: String,
       minlength: 3,
-      default: "Unlinked",
+      default: "Unknown",
     },
     IFSC_Code: {
       type: String,

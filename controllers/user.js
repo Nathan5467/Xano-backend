@@ -163,6 +163,30 @@ const registeragain = async (req, res) => {
   return res.status(200).json({ msg: "User logged in", token });
 };
 
+
+
+// Backend route example (for reference)
+const resetPassword = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { newPassword } = req.body;
+    const salt = await bcrypt.genSalt(10);
+    hashedPassword = await bcrypt.hash(newPassword, salt);
+
+
+    // const hashedPassword = await bcrypt.hash(newPassword, 10);
+    
+    // Update user password in database
+    // const result= await User.findByIdAndUpdate(userId, { password: newPassword });
+    const result= await User.findByIdAndUpdate(id,{password:hashedPassword})
+    
+    res.status(200).json({ message: 'Password reset successful' });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to reset password' });
+  }
+};
+
+
 // Exports
 module.exports = {
   login,
@@ -173,4 +197,5 @@ module.exports = {
   registeragain,
   deleteUser,
   logBoolean,
+  resetPassword,
 };
