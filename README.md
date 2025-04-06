@@ -2,6 +2,7 @@
 
 A robust Node.js/Express backend application for user management with JWT authentication.
 
+Update Date: 2025.04.06.09.55.AM
 ## Features
 
 - User registration and authentication

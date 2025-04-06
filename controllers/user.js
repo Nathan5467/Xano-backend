@@ -96,7 +96,7 @@ const deleteUser = async (req, res) => {
 const updateUser = async (req, res) => {
   const options = { new: true };
   const updateData = { ...req.body };
-  const result = await User.findByIdAndUpdate(req.user.id, updateData, options);
+  const result = await User.findByIdAndUpdate(req.params.id, updateData, options);
 
   if (!result) {
     return res.status(404).json({ msg: "User not found" });

@@ -81,6 +81,22 @@ const putFund_history = async (req, res) => {
   }
   return res.status(200).json({ msg: "success" });
 };
+
+const editFund_history = async (req, res) => {
+  const options = { new: true };
+  const updatedata = req.body;
+  console.log(req.params);
+  const result = await Fund.findByIdAndUpdate(
+    req.params.id,
+    updatedata,
+    options
+  );
+  if (!result) {
+    return res.status(404).send({ message: "Fund not found" });
+    console.log("err");
+  }
+  return res.status(200).json({ msg: "success" });
+};
 const postFund_history = async (req, res) => {
   const new_fund = new Fund(req.body);
   await new_fund.save();
@@ -174,6 +190,7 @@ module.exports = {
   deleteOrder,
   getAdminFund,
   putFund_history,
+  editFund_history,
   getPendingPortfolio,
   putPendingPortfolio,
 };

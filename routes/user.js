@@ -22,6 +22,7 @@ const {
   deleteOrder,
   getFund_history,
   putFund_history,
+  editFund_history,
   postFund_history,
   deleteFund_history,
   getTotal_fund,
@@ -57,6 +58,7 @@ router.route("/getpending").get(authMiddleware, getAdminFund);
 router.route("/getFund_history").post(authMiddleware, postFund_history);
 router.route("/getpending").put(authMiddleware, putFund_history);
 router.route("/getFund_history/:id").delete(authMiddleware, deleteFund_history);
+router.route("/getFund_history/:id").put(authMiddleware, editFund_history);
 
 //order section
 router.route("/Order").get(authMiddleware, getOrder);
